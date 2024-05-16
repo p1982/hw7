@@ -40,11 +40,23 @@ promiseAll(promises)
 
 //Task2 Implement promiseAllSettled Function
 function promiseAllSettled(promises) {
-    return Promise.all(promises.map(promise => {
+    const settledPromises = [];
+
+    const handlePromise = (promise) => {
         return promise
             .then(value => ({ status: 'fulfilled', value }))
             .catch(reason => ({ status: 'rejected', reason }));
-    }));
+    };
+
+    const processPromises = async () => {
+        for (const promise of promises) {
+            const settledPromise = await handlePromise(promise);
+            settledPromises.push(settledPromise);
+        }
+        return settledPromises;
+    };
+
+    return processPromises();
 }
 
 const promisesTask2 = [
@@ -91,7 +103,7 @@ chainPromises(functionsArray)
 
 //Task 4: Implement promisify Function
 function promisify(callbackStyleFunction) {
-    return function(...args) {
+    return function (...args) {
         return new Promise((resolve, reject) => {
             callbackStyleFunction(...args, (error, result) => {
                 if (error) {
